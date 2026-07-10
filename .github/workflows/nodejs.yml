@@ -15,7 +15,7 @@ jobs:
         name: unit testing
         strategy:
           matrix:
-            nodejs_version: [18,19,20]
+            nodejs_version: [18,20]
             operating_system: [ubuntu-latest, macos-latest]
             exclude:
                 - nodejs_version: 18
@@ -41,3 +41,32 @@ jobs:
           with:
             name: Mocha-Test-Result
             path: test-results.xml
+
+    
+    code-coverage:
+            name: code-coverage
+            runs-on: ubuntu-latest
+            steps:
+            - name: checkout repo
+              uses: actions/checkout@v4
+
+            - name: setup nodejs version
+              uses: actions/setup-node@v3
+              with:
+                node-version: 18
+
+            - name: install depedencies
+              run: npm install
+
+            - name: check code coverage
+              continue-on-error: true
+              run: npm run coverage
+
+            - name: Archive Test Result
+              uses: actions/upload-artifact@v7
+              with:
+                name: code-coverage-Test-Result
+                path: coverage
+                retention-days: 5
+
+
